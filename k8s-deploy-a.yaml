@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a
+  labels:
+    svcLabel: a
+    target: istio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      svcLabel: a
+  template:
+    metadata:
+      labels:
+        svcLabel: a
+        version: v1
+    spec:
+      containers:
+      - name: svc-a
+        image: su225/istio-test:learning
+        ports:
+        - containerPort: 8888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-a
+  labels:
+    svcLabel: a
+    target: istio
+spec:
+  selector:
+    svcLabel: a
+    version: v1
+  ports:
+  - protocol: TCP
+    port: 8888
+  type: ClusterIP
